@@ -1,6 +1,7 @@
 #include <Servo.h>
 
-Servo myservo;
+Servo servo_cpu;
+Servo servo_memory;
 int incomingByte = 0;
 int val = 0;
 
@@ -10,34 +11,42 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  myservo.attach(9);
-  myservo.write(0);
+  servo_cpu.attach(10);
+  servo_cpu.write(0);
+  servo_memory.attach(11);
+  servo_memory.write(0);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
 
-  if (Serial.available() > 0) {
+  if (Serial.available()) {
     // read the incoming byte:
     incomingByte = Serial.read();
-    if (incomingByte != 35) {
+    if (incomingByte < 58 && incomingByte > 47) {//如果获取到的是数字
       val = val * 10 + (incomingByte - 48);
-    } else {
+    } else if (incomingByte == 67) { //如果获取到的是C,表示是CPU
       //把读到的数据呈现在舵机上
-      myservo.write(val);
-      //say what you got:
-      Serial.print("I received: ");
-      Serial.println(val);
-      val=0;//把val清零
+      servo_cpu.write(val);
+      val = 0; //把val清零
+    } else if (incomingByte == 77) { //如果获取到的是M,表示是memory 内存
+      servo_memory.write(val);
+      val = 0; //把val清零
     }
   }
 
-//  while (incomingByte != 35) {
-//    Serial.print("byte: ");
-//    Serial.println(incomingByte, DEC);
-//    val = val * 10 + (incomingByte - 48);
-//    incomingByte = Serial.read();
-//  }
+  //      say what you got:
+  //      Serial.print("I received: ");
+  //      Serial.println(val);
+
+  //  todo 监测按钮
+
+  //  while (incomingByte != 35) {
+  //    Serial.print("byte: ");
+  //    Serial.println(incomingByte, DEC);
+  //    val = val * 10 + (incomingByte - 48);
+  //    incomingByte = Serial.read();
+  //  }
 
 
 
