@@ -8,5 +8,4 @@ Using Arduino to display some of the computer's status.
 
 ## 初始配置
 1. 安装`Python3.5+`及各种依赖库。
-2. **进行sqlite的初始化**： cd至backend目录，运行`python manage.py makemigrations`和`python manage.py migrate`。
-3. **在`backend/mail_config.py`中配置你的邮箱信息**
+2. **在`backend/mail_config.py`中配置你的邮箱信息**

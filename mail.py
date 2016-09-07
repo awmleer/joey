@@ -13,7 +13,7 @@ def mail_connect():
 
 
 # 获取全部的邮件列表
-def list_all(request):
+def count():
     # 连接邮箱服务器
     box=mail_connect()
     # names = box.folders()
@@ -25,19 +25,13 @@ def list_all(request):
         q.unseen()  #所有的未读邮件
     )
 
-    # logger.info(emails)
-    for email in emails:
-        logger.info(email['from'])
-        logger.info(email['subject'])
-        email.mark(['seen'])
-
     box.logout()
-    return HttpResponse('success', content_type="text/plain")
+    return len(emails)
 
 
 
 # 把所有未读的邮件标记为已读
-def mark_seen(request):
+def mark_seen():
     # 连接邮箱服务器
     box=mail_connect()
     q = Q()
@@ -48,4 +42,4 @@ def mark_seen(request):
     for email in emails:
         email.mark(['seen'])
     box.logout()
-    return HttpResponse('success', content_type="text/plain")
+    return "success"
