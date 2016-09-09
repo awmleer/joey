@@ -23,18 +23,19 @@ def process():
     count=(count+1)%120
     Timer(1, process).start()
 
+time.sleep(2)
 Timer(0.5,process).start()
 
 
 def cpu():
     val = psutil.cpu_percent()
-    ser.write(b"%dC"%int(val*180/100))  # 把CPU使用比换算成180°,传给Arduino
-    print('CPU %d' % int(val * 180 / 100))
+    ser.write(b"%dC"%int(180 - val*180/100))  # 把CPU使用比换算成180°,传给Arduino
+    print('CPU %d' % int(180 - val * 180 / 100))
 
 def memory():
     val = psutil.virtual_memory().percent
-    ser.write(b"%dM" % int(val * 180 / 100))  # 把内存使用比换算成180°,传给Arduino
-    print('memory %d'% int(val * 180 / 100))
+    ser.write(b"%dM" % int(180 - val * 180 / 100))  # 把内存使用比换算成180°,传给Arduino
+    print('memory %d'% int(180 - val * 180 / 100))
 
 def mail_unseen():
     val = mail.count()
