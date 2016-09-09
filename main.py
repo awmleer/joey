@@ -2,12 +2,14 @@ import serial,time,psutil
 from threading import Timer
 import mail
 
+# 开启串口,超时设定为0.1秒
 ser = serial.Serial("/dev/cu.usbmodem1411",timeout=0.1)
 print(ser.name)
 
 # 使用count来记录process被调用的次数
 count=0
 
+# 每隔0.5秒触发一次process函数
 def process():
     global count
     print(count)
@@ -18,17 +20,16 @@ def process():
             cpu()
         else:
             memory()
-
     count=(count+1)%120
     Timer(1, process).start()
 
 Timer(0.5,process).start()
 
+
 def cpu():
     val = psutil.cpu_percent()
     ser.write(b"%dC"%int(val*180/100))  # 把CPU使用比换算成180°,传给Arduino
     print('CPU %d' % int(val * 180 / 100))
-
 
 def memory():
     val = psutil.virtual_memory().percent
@@ -42,5 +43,8 @@ def mail_unseen():
 
 while True:
     rec=ser.readline()
-    if rec==b'Mark':
+    if rec==b'Mark': #如果读取到了'mark'
         print(rec)
+        result=mail.mark_seen() #把邮件标为已读
+        if result=='success':
+            ser.write(b"0A")
