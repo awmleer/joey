@@ -11,6 +11,10 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
+  for(int i=2;i<=9;i++){
+    pinMode(i,OUTPUT);
+    digitalWrite(i,HIGH);
+  }
   servo_cpu.attach(10);
   servo_cpu.write(0);
   servo_memory.attach(11);
@@ -32,6 +36,11 @@ void loop() {
     } else if (incomingByte == 77) { //如果获取到的是M,表示是memory 内存
       servo_memory.write(val);
       val = 0; //把val清零
+    } else if(incomingByte == 65){ //如果获取到的是A,表示是未读邮件数量
+      LEDbar(val);
+      val=0;
+    }else { //如果出现非法字符,则可能是数据出错,此时清零val
+      val=0;
     }
   }
 
@@ -48,6 +57,16 @@ void loop() {
   //    incomingByte = Serial.read();
   //  }
 
-
-
 }
+
+
+void LEDbar(int val){
+  for(int i=0;i<8;i++){
+    if(i<val){
+      digitalWrite(i+2,LOW);
+    }else{
+      digitalWrite(i+2,HIGH);
+    }
+  }
+}
+

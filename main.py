@@ -13,14 +13,11 @@ def process():
     print(count)
     if count==0:
         mail_unseen()
-        print('mail')
     else:
         if count%2==0:
             cpu()
-            print('cpu')
         else:
             memory()
-            print('memory')
 
     count=(count+1)%120
     Timer(1, process).start()
@@ -30,15 +27,18 @@ Timer(0.5,process).start()
 def cpu():
     val = psutil.cpu_percent()
     ser.write(b"%dC"%int(val*180/100))  # 把CPU使用比换算成180°,传给Arduino
+    print('CPU %d' % int(val * 180 / 100))
+
 
 def memory():
     val = psutil.virtual_memory().percent
     ser.write(b"%dM" % int(val * 180 / 100))  # 把内存使用比换算成180°,传给Arduino
+    print('memory %d'% int(val * 180 / 100))
 
 def mail_unseen():
     val = mail.count()
     ser.write(b"%dA" % val)  # 把未读邮件总数传给Arduino
-    print('mail'+str(val))
+    print('mail '+str(val))
 
 
 
