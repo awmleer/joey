@@ -1,9 +1,12 @@
+#include <Button.h>
 #include <Servo.h>
 
 Servo servo_cpu;
 Servo servo_memory;
+Button btn(13);
 int incomingByte = 0;
 int val = 0;
+int p=0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -19,6 +22,7 @@ void setup() {
   servo_cpu.write(0);
   servo_memory.attach(11);
   servo_memory.write(0);
+  btn.begin();
 }
 
 void loop() {
@@ -43,6 +47,20 @@ void loop() {
       val=0;
     }
   }
+
+  //监听按钮
+  if(p){
+    if(btn.released()){
+      p=0;
+      LEDbar(7);
+      Serial.write("Mark");
+    }
+  }else{
+    if(btn.pressed()){
+      p=1;
+    }
+  }
+  
 
   //      say what you got:
   //      Serial.print("I received: ");

@@ -2,7 +2,7 @@ import serial,time,psutil
 from threading import Timer
 import mail
 
-ser = serial.Serial("/dev/cu.usbmodem1411")
+ser = serial.Serial("/dev/cu.usbmodem1411",timeout=0.1)
 print(ser.name)
 
 # 使用count来记录process被调用的次数
@@ -40,6 +40,7 @@ def mail_unseen():
     ser.write(b"%dA" % val)  # 把未读邮件总数传给Arduino
     print('mail '+str(val))
 
-
-
-# ser.close()
+while True:
+    rec=ser.readline()
+    if rec==b'Mark':
+        print(rec)
