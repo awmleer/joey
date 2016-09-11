@@ -17,7 +17,6 @@ def count():
     # 连接邮箱服务器
     box=mail_connect()
     # names = box.folders()
-    # logger.info(names)
 
     # 实例化query_builder
     q=Q()

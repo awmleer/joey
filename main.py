@@ -9,22 +9,25 @@ print(ser.name)
 # 使用count来记录process被调用的次数
 count=0
 
-# 每隔0.5秒触发一次process函数
+# 每隔1秒触发一次process函数
 def process():
     global count
     print(count)
-    if count==0:
+    #使用双层的if，是为了防止出现120秒时串口会同时传两个数据的问题
+    if count==0: #每隔120秒更新一次mail的数据
         mail_unseen()
     else:
-        if count%2==0:
+        if count%2==0: #每隔2秒更新一次CPU的数据
             cpu()
-        else:
+        else: #每隔2秒更新一次memory的数据
             memory()
     count=(count+1)%120
-    Timer(1, process).start()
+    Timer(1, process).start()# 触发下一次的定时器
 
+
+# 先等待2秒（确保Arduino就绪），再触发process()函数
 time.sleep(2)
-Timer(0.5,process).start()
+process()
 
 
 def cpu():
@@ -47,5 +50,5 @@ while True:
     if rec==b'Mark': #如果读取到了'mark'
         print(rec)
         result=mail.mark_seen() #把邮件标为已读
-        if result=='success':
+        if result=='success': #标记已读成功
             ser.write(b"0A")

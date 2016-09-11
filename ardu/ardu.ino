@@ -4,16 +4,17 @@
 Servo servo_cpu;
 Servo servo_memory;
 Button btn(13);
+
 int incomingByte = 0;
-int val = 0;
-int p = 0;
+int val = 0;//val用来临时存放从串口中读取到的数字
+int p = 0;//p用来标记按钮是否被按下
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ; // 等待串口就绪
   }
+  //引脚定义
   for (int i = 2; i <= 9; i++) {
     pinMode(i, OUTPUT);
     digitalWrite(i, HIGH);
@@ -26,27 +27,25 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  //判断串口中是否有数据传来
   if (Serial.available()) {
-    serialRead();
+    serialRead();//调用serialRead来读取串口中的数据并做处理
   }
 
   //监听按钮
   if (p) {
     if (btn.released()) {
-      int p = 0;
+      p = 0;
       Serial.write("Mark");//通过串口传给计算机数据
       int i=0;
-      int mark_done=0;
+      //让LEDbar显示循环点亮动画,直到从串口收到'0A'的消息
       while (true) {
         i=(i+1)%9;
         LEDbar(i);
         for (int k = 0; k < 30000; k++) {
           if (Serial.available()) {
             serialRead();
-            mark_done=1;
-            return;
+            return;//直接退出本次的loop
           }
         }
       }
@@ -60,7 +59,7 @@ void loop() {
 }
 
 void serialRead() {
-  // read the incoming byte:
+  // 读取一个字节
   incomingByte = Serial.read();
   if (incomingByte < 58 && incomingByte > 47) {//如果获取到的是数字
     val = val * 10 + (incomingByte - 48);
@@ -79,6 +78,8 @@ void serialRead() {
   }
 }
 
+
+//控制LEDbar点亮的个数
 void LEDbar(int val) {
   for (int i = 0; i < 8; i++) {
     if (i < val) {
